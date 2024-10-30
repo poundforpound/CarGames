@@ -12,7 +12,9 @@ body {
 
 .car {
   position: absolute;
-  bottom: 0;
+  -webkit-transform: translateY(70vh);
+      -ms-transform: translateY(70vh);
+          transform: translateY(70vh);
   width: 80px;
 }
 
@@ -66,6 +68,47 @@ body {
       -ms-transform: translate(220px, 80vh);
           transform: translate(220px, 80vh);
   width: 220px;
+}
+
+.speed {
+  z-index: 10;
+  position: fixed;
+  left: 10px;
+  top: 10px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  color: orange;
+  background-color: #333;
+}
+
+.speed h2 {
+  margin: 0;
+  font-size: 24px;
+  text-align: center;
+}
+
+.speed input {
+  width: 60px;
+  height: 50px;
+  text-align: center;
+  border: none;
+  background-color: transparent;
+  color: orange;
+  font-size: 24px;
 }
 
 .btn {

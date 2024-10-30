@@ -10,7 +10,7 @@ body {
 }
 .car {
 	position: absolute;
-	bottom: 0;
+	transform: translateY(70vh);
 	width: 80px;
 }
 .road {
@@ -44,6 +44,38 @@ body {
 .tree6 {
 	transform: translate(220px, 80vh);
 	width: 220px;
+}
+
+.speed {
+	z-index: 10;
+	position: fixed;
+	left: 10px;
+	top: 10px;
+	width: 120px;
+	height: 120px;
+	border-radius: 50%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	color: orange;
+	background-color: #333;
+}
+
+.speed h2 {
+	margin: 0;
+	font-size: 24px;
+	text-align: center;
+}
+
+.speed input {
+	width: 60px;
+	height: 50px;
+	text-align: center;
+	border: none;
+	background-color: transparent;
+	color: orange;
+	font-size: 24px;
 }
 .btn {
 	position: fixed;
