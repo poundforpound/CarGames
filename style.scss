@@ -1,0 +1,78 @@
+$body: #6c7b2a;
+$road: #817f84;
+
+body {
+	background-color: $body;
+	margin: 0;
+	display: flex;
+	justify-content: center;
+	overflow: hidden;
+}
+.car {
+	position: absolute;
+	bottom: 0;
+	width: 80px;
+}
+.road {
+	background-color: $road;
+	width: 300px;
+	height: 100vh;
+}
+.tree {
+	position: absolute;
+}
+.tree1 {
+	transform: translate(-220px, -10vh);
+	width: 200px;
+}
+.tree2 {
+	transform: translate(-240px, 25vh);
+	width: 250px;
+}
+.tree3 {
+	transform: translate(-220px, 70vh);
+	width: 180px;
+}
+.tree4 {
+	transform: translate(220px, -5vh);
+	width: 240px;
+}
+.tree5 {
+	transform: translate(220px, 40vh);
+	width: 200px;
+}
+.tree6 {
+	transform: translate(220px, 80vh);
+	width: 220px;
+}
+.btn {
+	position: fixed;
+	right: 10px;
+	top: 10px;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+	transition: transform 0.3s ease;
+	img {
+		width: 60px;
+		height: 60px;
+	}
+}
+
+.btn:hover {
+	transform: scale(1.2);
+}
+
+.arrow {
+	position: absolute;
+	width: 60px;
+}
+.coin {
+	position: absolute;
+	width: 50px;
+}
+.danger {
+	position: absolute;
+	width: 80px;
+}

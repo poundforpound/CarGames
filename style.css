@@ -1,0 +1,108 @@
+body {
+  background-color: #6c7b2a;
+  margin: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  overflow: hidden;
+}
+
+.car {
+  position: absolute;
+  bottom: 0;
+  width: 80px;
+}
+
+.road {
+  background-color: #817f84;
+  width: 300px;
+  height: 100vh;
+}
+
+.tree {
+  position: absolute;
+}
+
+.tree1 {
+  -webkit-transform: translate(-220px, -10vh);
+      -ms-transform: translate(-220px, -10vh);
+          transform: translate(-220px, -10vh);
+  width: 200px;
+}
+
+.tree2 {
+  -webkit-transform: translate(-240px, 25vh);
+      -ms-transform: translate(-240px, 25vh);
+          transform: translate(-240px, 25vh);
+  width: 250px;
+}
+
+.tree3 {
+  -webkit-transform: translate(-220px, 70vh);
+      -ms-transform: translate(-220px, 70vh);
+          transform: translate(-220px, 70vh);
+  width: 180px;
+}
+
+.tree4 {
+  -webkit-transform: translate(220px, -5vh);
+      -ms-transform: translate(220px, -5vh);
+          transform: translate(220px, -5vh);
+  width: 240px;
+}
+
+.tree5 {
+  -webkit-transform: translate(220px, 40vh);
+      -ms-transform: translate(220px, 40vh);
+          transform: translate(220px, 40vh);
+  width: 200px;
+}
+
+.tree6 {
+  -webkit-transform: translate(220px, 80vh);
+      -ms-transform: translate(220px, 80vh);
+          transform: translate(220px, 80vh);
+  width: 220px;
+}
+
+.btn {
+  position: fixed;
+  right: 10px;
+  top: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  -webkit-transition: -webkit-transform 0.3s ease;
+  transition: -webkit-transform 0.3s ease;
+  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, -webkit-transform 0.3s ease;
+}
+.btn img {
+  width: 60px;
+  height: 60px;
+}
+
+.btn:hover {
+  -webkit-transform: scale(1.2);
+      -ms-transform: scale(1.2);
+          transform: scale(1.2);
+}
+
+.arrow {
+  position: absolute;
+  width: 60px;
+}
+
+.coin {
+  position: absolute;
+  width: 50px;
+}
+
+.danger {
+  position: absolute;
+  width: 80px;
+}
