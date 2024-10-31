@@ -1,38 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Car Game</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Car Game</title>
-	<link rel="stylesheet" href="style.css">
-</head>
+  <body>
+    <div class="speed">
+      <h2>Speed</h2>
+      <input type="number" value="3" min="1" />
+    </div>
+    <div class="road"></div>
+    <img src="./images/car.png" class="car" />
+    <img src="./images/tree1.png" class="tree tree1" id="1" />
+    <img src="./images/tree3.png" class="tree tree2" id="2" />
+    <img src="./images/tree2.png" class="tree tree3" id="3" />
+    <img src="./images/tree3.png" class="tree tree4" id="4" />
+    <img src="./images/tree2.png" class="tree tree5" id="5" />
+    <img src="./images/tree1.png" class="tree tree6" id="6" />
+    <button type="button" class="btn">
+      <img class="pause" src="./images/pause.png" alt="" />
+      <img class="play" src="./images/play.png" alt="" />
+    </button>
 
-<body>
-	<div class="speed">
-		<h2>Speed</h2>
-		<input type="number"value="3" min="1">
-	</div>
-	<div class="road">
-	</div>
-	<img src="./images/car.png" class="car" >
-	<img src="./images/tree1.png" class="tree tree1" id="1"> 
-	<img src="./images/tree3.png" class="tree tree2" id="2">
-	<img src="./images/tree2.png" class="tree tree3" id="3">
-	<img src="./images/tree3.png" class="tree tree4" id="4">
-	<img src="./images/tree2.png" class="tree tree5" id="5">
-	<img src="./images/tree1.png" class="tree tree6" id="6"> 
-	<button type="button" class="btn">
-		<img class="pause" src="./images/pause.png" alt="">
-		<img class="play" src="./images/play.png" alt="">
-	
-	</button>
-
-	<!-- <img src="./images/arrow.png" class="arrow" alt="">
-	<img src="./images/danger.png" class="danger" alt="">
-	<img src="./images/coin.png" class="coin" alt=""> -->
-	<script src="script.js"></script>
-
-</body>
-
+    <img src="./images/arrow.png" class="arrow" alt="" />
+    <img src="./images/danger.png" class="danger" alt="" />
+    <img src="./images/coin.png" class="coin" alt="" />
+    <script src="script.js"></script>
+  </body>
 </html>
