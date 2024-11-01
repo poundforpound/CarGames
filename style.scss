@@ -117,3 +117,85 @@ body {
 	width: 80px;
 	transform: translate(-75px, -250px);
 }
+.score {
+	position: absolute;
+	top: 150px;
+	left: 10px;
+	font-size: 24px;
+	width: 120px;
+	height: 120px;
+	background-color: orangered;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 100;
+}
+.backdrop {
+	display: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(0, 0, 0, 0.75);
+	opacity: 0.5;
+	justify-content: center;
+	align-items: center;
+	z-index: 50;
+}
+.backdrop-container {
+	padding: 5px 8px;
+	border-radius: 8px;
+	background: white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	width: 350px;
+	margin: 0px auto;
+}
+.finish-text {
+	display: flex;
+	align-items: center;
+	font-size: 20px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+.finish-text::before,
+.finish-text::after {
+	content: "👿";
+	display: block;
+	margin-left: 10px;
+	font-size: 36px;
+	animation: ease 0.3s jump infinite alternate;
+}
+
+.finish-text::before {
+	animation-delay: 0.2s;
+	margin-right: 10px;
+}
+.finish-text span {
+	margin-left: 10px;
+	color: rgb(142, 12, 82);
+	font-size: 25px;
+}
+@keyframes jump {
+	0% {
+		transform: translateY(10px);
+	}
+	100% {
+		transform: translateY(0px);
+	}
+}
+.restart-button {
+	border: none;
+	border-radius: 8px;
+	color: white;
+	background: rgb(142, 12, 82);
+	font-size: 20px;
+	padding: 8px 25px;
+	cursor: pointer;
+}
+.restart-button:hover {
+	background: rgb(177, 14, 104);
+}

@@ -1,34 +1,46 @@
 (function () {
   let isPause = false;
   let animationId = null;
+  let speed = 3; // Инициализация глобальной переменной speed
 
-  const car = document.querySelector('.car');
-  const carWidth = car.clientWidth;
-  const carHeight = car.clientHeight;
-  const carMove = {
-    top: null,
-    bottom: null,
-    left: null,
-    right: null,
-  };
-  const carCoordinates = getCoordinate(car);
-
+  const button = document.querySelector('.btn');
   const road = document.querySelector('.road');
-  const roadHeight = road.clientHeight;
-  const roadWidth = road.clientWidth;
-
+  const car = document.querySelector('.car');
+  const coin = document.querySelector('.coin');
+  const arrow = document.querySelector('.arrow');
+  const danger = document.querySelector('.danger');
   const trees = document.querySelectorAll('.tree');
-  const firstTree = trees[0];
+  const score = document.querySelector('.score div');
+  const speedInput = document.querySelector('.speed input');
+  const backdrop = document.querySelector('.backdrop');
+  const scoreContainer = document.querySelector('.score');
+  const speedContainer = document.querySelector('.speed');
+  const restartButton = document.querySelector('.restart-button');
+
   const allTrees = [];
 
-  const coin = document.querySelector('.coin');
-  const coinCoordinates = getCoordinate(coin);
+  class ElementInfo {
+    constructor(element, move = {}) {
+      this.element = element;
+      this.coordinates = getCoordinate(element);
+      this.width = element.clientWidth;
+      this.height = element.clientHeight;
+      this.visible = true;
+      this.move = move;
+    }
+  }
 
-  const arrow = document.querySelector('.arrow');
-  const arrowCoordinates = getCoordinate(arrow);
-
-  const danger = document.querySelector('.danger');
-  const dangerCoordinates = getCoordinate(danger);
+  const carInfo = new ElementInfo(car, {
+    move: {
+      top: null,
+      bottom: null,
+      left: null,
+      right: null,
+    },
+  });
+  const coinInfo = new ElementInfo(coin);
+  const arrowInfo = new ElementInfo(arrow);
+  const dangerInfo = new ElementInfo(danger);
 
   animationId = requestAnimationFrame(startGame);
   trees.forEach((el) => {
@@ -36,18 +48,30 @@
     const coordinates = getCoordinate(el);
     allTrees.push({ element: el, coordinates });
   });
+
   function startGame() {
     animationId = requestAnimationFrame(startGame);
-    const speed = document.querySelector('.speed input').value;
+    if (hasCollision(carInfo, dangerInfo)) {
+      return finishGame();
+    }
+    speed = parseFloat(speedInput.value); // Обновление глобальной переменной speed
     animationTrees(speed);
-    elementAnimation(speed, coinCoordinates, coin);
-    elementAnimation(speed, arrowCoordinates, arrow);
-    elementAnimation(speed, dangerCoordinates, danger);
+    elementAnimation(speed, coinInfo, coin);
+    elementAnimation(speed, arrowInfo, arrow);
+    elementAnimation(speed, dangerInfo, danger);
+    if (coinInfo.visible && hasCollision(carInfo, coinInfo)) {
+      coin.style.display = 'none';
+      score.innerHTML = parseInt(score.innerHTML) + 1;
+      coinInfo.visible = false;
+      if (parseInt(score.innerHTML) % 2 === 0) {
+        speed += 1;
+        speedInput.value = speed;
+      }
+    }
   }
-
   const biggestTree = allTrees.reduce((acc, el) => {
-    if (el.element.height > acc) {
-      return el.element.height;
+    if (el.element.clientHeight > acc) {
+      return el.element.clientHeight;
     }
     return acc;
   }, 0);
@@ -55,7 +79,7 @@
   function animationTrees(speed) {
     allTrees.forEach((el) => {
       const { element, coordinates } = el;
-      let newCoordinateY = coordinates.y + parseFloat(speed);
+      let newCoordinateY = coordinates.y + speed;
 
       if (newCoordinateY > window.innerHeight) {
         newCoordinateY = -biggestTree;
@@ -65,23 +89,20 @@
     });
   }
 
-  function elementAnimation(speed, elementCoordinates, element) {
-    let newCoordinateY = elementCoordinates.y + parseFloat(speed);
-    let newCoordinateX = elementCoordinates.x;
+  function elementAnimation(speed, elementInfo, element) {
+    let newCoordinateY = elementInfo.coordinates.y + speed;
+    let newCoordinateX = elementInfo.coordinates.x;
     if (newCoordinateY > window.innerHeight) {
       newCoordinateY = -element.clientHeight * 2;
       const direction = Math.floor(Math.random() * 2);
       const randomX = parseFloat(Math.random() * (road.clientWidth / 2 - element.clientWidth / 2));
-      // if (direction === 0) {
-      //   newCoordinateX = -randomX;
-      // } else if (direction === 1) {
-      //   newCoordinateX = randomX;
-      // }
       newCoordinateX = direction === 0 ? -randomX : randomX;
+      element.style.display = 'initial';
+      elementInfo.visible = true;
     }
-    elementCoordinates.y = newCoordinateY;
-    elementCoordinates.x = newCoordinateX;
-    element.style.transform = `translate(${elementCoordinates.x}px, ${elementCoordinates.y}px)`;
+    elementInfo.coordinates.y = newCoordinateY;
+    elementInfo.coordinates.x = newCoordinateX;
+    element.style.transform = `translate(${elementInfo.coordinates.x}px, ${elementInfo.coordinates.y}px)`;
   }
 
   function getCoordinate(element) {
@@ -91,15 +112,30 @@
     const coordinateX = parseFloat(matrixArray[matrixArray.length - 2]);
     return { x: coordinateX, y: coordinateY };
   }
-  const button = document.querySelector('.btn');
+
+  function finishGame() {
+    cancelAnimationFrame(animationId);
+    cancelAnimationFrame(carInfo.move.top);
+    cancelAnimationFrame(carInfo.move.bottom);
+    cancelAnimationFrame(carInfo.move.left);
+    cancelAnimationFrame(carInfo.move.right);
+    backdrop.style.display = 'flex';
+    button.style.display = 'none';
+    scoreContainer.style.display = 'none';
+    speedContainer.style.display = 'none';
+    const finalScore = backdrop.querySelector('.finish-text span');
+    const currentScore = score.innerHTML;
+    finalScore.innerText = currentScore;
+  }
+
   button.addEventListener('click', () => {
     isPause = !isPause;
     if (isPause) {
       cancelAnimationFrame(animationId);
-      cancelAnimationFrame(carMove.top);
-      cancelAnimationFrame(carMove.bottom);
-      cancelAnimationFrame(carMove.left);
-      cancelAnimationFrame(carMove.right);
+      cancelAnimationFrame(carInfo.move.top);
+      cancelAnimationFrame(carInfo.move.bottom);
+      cancelAnimationFrame(carInfo.move.left);
+      cancelAnimationFrame(carInfo.move.right);
       button.children[0].style.display = 'none';
       button.children[1].style.display = 'block';
     } else {
@@ -109,83 +145,110 @@
     }
   });
 
-  window.addEventListener('keydown', (e) => {
+  document.addEventListener('keydown', (e) => {
     if (isPause) {
       return;
     }
-    if (e.code === 'ArrowUp' && carMove.top === null) {
-      if (carMove.bottom !== null) {
+    if (e.code === 'ArrowUp' && carInfo.move.top === null) {
+      if (carInfo.move.bottom !== null) {
         return;
       }
-      carMove.top = requestAnimationFrame(carMoveToTop);
-    } else if (e.code === 'ArrowDown' && carMove.bottom === null) {
-      if (carMove.top !== null) {
+      carInfo.move.top = requestAnimationFrame(carMoveToTop);
+    } else if (e.code === 'ArrowDown' && carInfo.move.bottom === null) {
+      if (carInfo.move.top !== null) {
         return;
       }
-      carMove.bottom = requestAnimationFrame(carMoveToBottom);
-    } else if (e.code === 'ArrowLeft' && carMove.left === null) {
-      if (carMove.right !== null) {
+      carInfo.move.bottom = requestAnimationFrame(carMoveToBottom);
+    } else if (e.code === 'ArrowLeft' && carInfo.move.left === null) {
+      if (carInfo.move.right !== null) {
         return;
       }
-      carMove.left = requestAnimationFrame(carMoveToLeft);
-    } else if (e.code === 'ArrowRight' && carMove.right === null) {
-      if (carMove.left !== null) {
+      carInfo.move.left = requestAnimationFrame(carMoveToLeft);
+    } else if (e.code === 'ArrowRight' && carInfo.move.right === null) {
+      if (carInfo.move.left !== null) {
         return;
       }
-      carMove.right = requestAnimationFrame(carMoveToRight);
+      carInfo.move.right = requestAnimationFrame(carMoveToRight);
     }
   });
 
   window.addEventListener('keyup', (e) => {
     if (e.code === 'ArrowUp') {
-      cancelAnimationFrame(carMove.top);
-      carMove.top = null;
+      cancelAnimationFrame(carInfo.move.top);
+      carInfo.move.top = null;
     } else if (e.code === 'ArrowDown') {
-      cancelAnimationFrame(carMove.bottom);
-      carMove.bottom = null;
+      cancelAnimationFrame(carInfo.move.bottom);
+      carInfo.move.bottom = null;
     } else if (e.code === 'ArrowLeft') {
-      cancelAnimationFrame(carMove.left);
-      carMove.left = null;
+      cancelAnimationFrame(carInfo.move.left);
+      carInfo.move.left = null;
     } else if (e.code === 'ArrowRight') {
-      cancelAnimationFrame(carMove.right);
-      carMove.right = null;
+      cancelAnimationFrame(carInfo.move.right);
+      carInfo.move.right = null;
     }
   });
 
   function carMoveToTop() {
-    const newCoordinateY = carCoordinates.y - 5;
+    const newCoordinateY = carInfo.coordinates.y - 5;
     if (newCoordinateY < 0) {
       return;
     }
-    carCoordinates.y = newCoordinateY;
-    car.style.transform = `translate(${carCoordinates.x}px, ${carCoordinates.y}px)`;
-    carMove.top = requestAnimationFrame(carMoveToTop);
+    carInfo.coordinates.y = newCoordinateY;
+    car.style.transform = `translate(${carInfo.coordinates.x}px, ${carInfo.coordinates.y}px)`;
+    carInfo.move.top = requestAnimationFrame(carMoveToTop);
   }
+
   function carMoveToBottom() {
-    const newCoordinateY = carCoordinates.y + 5;
-    if (newCoordinateY > roadHeight - carHeight) {
+    const newCoordinateY = carInfo.coordinates.y + 5;
+    if (newCoordinateY > road.clientHeight - car.clientHeight) {
       return;
     }
-    carCoordinates.y = newCoordinateY;
-    car.style.transform = `translate(${carCoordinates.x}px, ${carCoordinates.y}px)`;
-    carMove.bottom = requestAnimationFrame(carMoveToBottom);
+    carInfo.coordinates.y = newCoordinateY;
+    car.style.transform = `translate(${carInfo.coordinates.x}px, ${carInfo.coordinates.y}px)`;
+    carInfo.move.bottom = requestAnimationFrame(carMoveToBottom);
   }
+
+  function hasCollision(element1, element2) {
+    const carYTop = element1.coordinates.y;
+    const carYBottom = element1.coordinates.y + element1.height;
+    const carXLeft = element1.coordinates.x - element1.width / 2;
+    const carXRight = element1.coordinates.x + element1.width / 2;
+
+    const coinYTop = element2.coordinates.y;
+    const coinYBottom = element2.coordinates.y + element2.height;
+    const coinXLeft = element2.coordinates.x - element2.width / 2;
+    const coinXRight = element2.coordinates.x + element2.width / 2;
+
+    if (carYTop > coinYBottom || carYBottom < coinYTop) {
+      return false;
+    }
+    if (carXLeft > coinXRight || carXRight < coinXLeft) {
+      return false;
+    }
+    return true;
+  }
+
   function carMoveToLeft() {
-    const newCoordinateX = carCoordinates.x - 5;
-    if (newCoordinateX - carWidth / 2 < -roadWidth / 2) {
+    const newCoordinateX = carInfo.coordinates.x - 5;
+    if (newCoordinateX < -road.clientWidth / 2 + car.clientWidth / 2) {
       return;
     }
-    carCoordinates.x = newCoordinateX;
-    car.style.transform = `translate(${carCoordinates.x}px, ${carCoordinates.y}px)`;
-    carMove.left = requestAnimationFrame(carMoveToLeft);
+    carInfo.coordinates.x = newCoordinateX;
+    car.style.transform = `translate(${carInfo.coordinates.x}px, ${carInfo.coordinates.y}px)`;
+    carInfo.move.left = requestAnimationFrame(carMoveToLeft);
   }
+
   function carMoveToRight() {
-    if (carCoordinates.x + carWidth / 2 > roadWidth / 2) {
+    const newCoordinateX = carInfo.coordinates.x + 5;
+    if (newCoordinateX >= road.clientWidth / 2 - car.clientWidth / 2) {
       return;
     }
-    const newCoordinateX = carCoordinates.x + 5;
-    carCoordinates.x = newCoordinateX;
-    car.style.transform = `translate(${carCoordinates.x}px, ${carCoordinates.y}px)`;
-    carMove.right = requestAnimationFrame(carMoveToRight);
+    carInfo.coordinates.x = newCoordinateX;
+    car.style.transform = `translate(${carInfo.coordinates.x}px, ${carInfo.coordinates.y}px)`;
+    carInfo.move.right = requestAnimationFrame(carMoveToRight);
   }
+
+  restartButton.addEventListener('click', () => {
+    window.location.reload();
+  });
 })();
