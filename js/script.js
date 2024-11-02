@@ -2,6 +2,7 @@
   let isPause = false;
   let animationId = null;
   let speed = 3; // Инициализация глобальной переменной speed
+  let isWaiting = false; // Флаг для управления состоянием ожидания
 
   const button = document.querySelector('.btn');
   const road = document.querySelector('.road');
@@ -44,20 +45,18 @@
 
   animationId = requestAnimationFrame(startGame);
   trees.forEach((el) => {
-    const id = el.id;
     const coordinates = getCoordinate(el);
     allTrees.push({ element: el, coordinates });
   });
 
   function startGame() {
     animationId = requestAnimationFrame(startGame);
-    if (hasCollision(carInfo, dangerInfo)) {
+    if (!isWaiting && hasCollision(carInfo, dangerInfo)) {
       return finishGame();
     }
     speed = parseFloat(speedInput.value); // Обновление глобальной переменной speed
     animationTrees(speed);
     elementAnimation(speed, coinInfo, coin);
-    elementAnimation(speed, arrowInfo, arrow);
     elementAnimation(speed, dangerInfo, danger);
     if (coinInfo.visible && hasCollision(carInfo, coinInfo)) {
       coin.style.display = 'none';
@@ -68,7 +67,22 @@
         speedInput.value = speed;
       }
     }
+    elementAnimation(speed, arrowInfo, arrow);
+    if (arrowInfo.visible && hasCollision(carInfo, arrowInfo)) {
+      arrow.style.display = 'none';
+      arrowInfo.visible = false;
+      danger.style.opacity = 0.2;
+      dangerInfo.visible = false;
+      speedInput.value = speed + 5;
+      isWaiting = true;
+      setTimeout(() => {
+        danger.style.opacity = 1;
+        dangerInfo.visible = true;
+        isWaiting = false;
+      }, 3000);
+    }
   }
+
   const biggestTree = allTrees.reduce((acc, el) => {
     if (el.element.clientHeight > acc) {
       return el.element.clientHeight;
@@ -97,20 +111,14 @@
       const direction = Math.floor(Math.random() * 2);
       const randomX = parseFloat(Math.random() * (road.clientWidth / 2 - element.clientWidth / 2));
       newCoordinateX = direction === 0 ? -randomX : randomX;
-      element.style.display = 'initial';
-      elementInfo.visible = true;
+      if (!isWaiting) {
+        element.style.display = 'initial';
+        elementInfo.visible = true;
+      }
     }
     elementInfo.coordinates.y = newCoordinateY;
     elementInfo.coordinates.x = newCoordinateX;
     element.style.transform = `translate(${elementInfo.coordinates.x}px, ${elementInfo.coordinates.y}px)`;
-  }
-
-  function getCoordinate(element) {
-    const matrix = window.getComputedStyle(element).transform;
-    const matrixArray = matrix.split(',');
-    const coordinateY = parseFloat(matrixArray[matrixArray.length - 1]);
-    const coordinateX = parseFloat(matrixArray[matrixArray.length - 2]);
-    return { x: coordinateX, y: coordinateY };
   }
 
   function finishGame() {
@@ -218,7 +226,6 @@
     const coinYBottom = element2.coordinates.y + element2.height;
     const coinXLeft = element2.coordinates.x - element2.width / 2;
     const coinXRight = element2.coordinates.x + element2.width / 2;
-
     if (carYTop > coinYBottom || carYBottom < coinYTop) {
       return false;
     }
